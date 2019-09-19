@@ -1,14 +1,21 @@
 import React, { useState } from "react";
-import { format, addMonths, subMonths } from "date-fns";
+import {
+  format,
+  addMonths,
+  addDays,
+  subMonths,
+  startOfWeek,
+  startOfMonth,
+  endOfWeek,
+  endOfMonth
+} from "date-fns";
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const header = () => {
-    const dateFormat = "mmmm yyyy";
-
-    console.log(format, addMonths, subMonths);
+    const dateFormat = "MMMM yyyy";
 
     const nextMonth = () => {
       setCurrentDate(addMonths(currentDate, 1));
@@ -37,9 +44,28 @@ export default function Calendar() {
     );
   };
 
-  const daysOfWeek = () => {};
+  const daysOfWeek = () => {
+    const dateFormat = "E";
+    const days = [];
+    let startDate = startOfWeek(currentDate);
 
-  const cells = () => {};
+    for (let i = 0; i < 7; i++) {
+      days.push(
+        <div className="column col-center" key={i}>
+          {format(addDays(startDate, i), dateFormat)}
+        </div>
+      );
+    }
+
+    return <div className="days row">{days}</div>;
+  };
+
+  const cells = () => {
+    const monthStart = startOfMonth(currentDate);
+    const monthEnd = endOfMonth(currentDate);
+
+    console.log(monthStart, monthEnd);
+  };
 
   return (
     <div className="calendar">

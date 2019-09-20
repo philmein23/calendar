@@ -7,7 +7,10 @@ import {
   startOfWeek,
   startOfMonth,
   endOfWeek,
-  endOfMonth
+  endOfMonth,
+  isSameMonth,
+  isSameDay,
+  parse
 } from "date-fns";
 
 export default function Calendar() {
@@ -62,9 +65,52 @@ export default function Calendar() {
 
   const cells = () => {
     const monthStart = startOfMonth(currentDate);
-    const monthEnd = endOfMonth(currentDate);
+    const monthEnd = endOfMonth(monthStart);
+    const startDate = startOfWeek(monthStart);
+    const endDate = endOfWeek(monthEnd);
+    const dateFormat = "d";
+    const rows = [];
 
-    console.log(monthStart, monthEnd);
+    let days = [];
+    let day = startDate;
+    let formattedDate = "";
+
+    while (day <= endDate) {
+      for (let i = 0; i < 7; i++) {
+        formattedDate = format(day, dateFormat);
+        const cloneDay = day;
+
+        days.push(
+          <div
+            className={`column cell ${
+              !isSameMonth(day, monthStart)
+                ? "disabled"
+                : isSameDay(day, selectedDate)
+                ? "selected"
+                : ""
+            }`}
+            key={day}
+            onClick={() => onDateClick(parse(cloneDay))}
+          >
+            <span className="number">{formattedDate}</span>
+            <span className="bg">{formattedDate}</span>
+          </div>
+        );
+
+        day = addDays(day, 1);
+      }
+
+      rows.push(
+        <div className="row" key={day}>
+          {days}
+        </div>
+      );
+      days = [];
+    }
+
+    console.log(monthStart, monthEnd, startDate, endDate);
+
+    return <div className="body">{rows}</div>;
   };
 
   return (
